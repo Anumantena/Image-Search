@@ -1,0 +1,277 @@
+//notes-3
+
+//React lifecycles https://projects.wojtekmaj.pl/react-lifecycle-methods-diagram/
+
+
+MOUNTING - reactDom.render(app, doc.getElembyid)
+
+    1. constructor - 
+    2. static getDerivedStatefromProps(current props, current state) -  donot have 'this' - used for direct dom manipulation
+    3. componentDidMount - 
+
+
+UNMOUNTING - 
+
+    componentWillUnmount
+
+
+UPDATING - (new props, setState, forceUpdate)
+
+    getDerivedStatefromProps - used for direct dom manipulation
+
+    shouldComponentUpdate - return false. ( never re-render)
+
+    render (called always) - returns UI. 
+
+    getSnapshotBeforeUpdate - used for direct dom manipulation
+
+    componentDidUpdate - used for direct dom manipulation, - (gets called whenever state or props, change) 
+    - this.setState ( but very careful, it could cause infinite loop)
+    
+    eg:-
+    
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        //never do this.
+        //this.setState(this.state.id ++ );
+
+        instead
+        if(...){
+            this.setState(this.state.id ++ );
+        }
+    }
+
+//doubts
+
+Parent -> Child
+
+can - <div> {this.props.name}
+
+cannot - this.props.name = 'val2'
+
+
+//React Hooks
+
+earlier
+state, props - setState, lifecycles.
+
+useState, useEffect, -> useMemo, useCallback, mulitple effects ( useLocalStorage, useScrollPosition )
+
+[] = useState({
+    'test'
+})
+
+or 
+
+//array Destructuring
+const [user, setUser] = useState({ name; 'Test'})
+
+return [user, setUser]
+
+Usecases of useState.
+
+//1. replacement of setState
+//2. Can you have mulitple useStates - yes.
+//3. Can you manage entire state in single useState(via object) - yes, but wont recommend.(Why? > need to destructure a lot. Causes avoidable mistakes.)
+
+// useEffect
+
+//what
+useEffect(cb, [...]) - it accepts 2 arguments, one Callback, And optional - array
+
+eg - 
+
+// effects, side-effects. (** - pure functions )
+    
+    medicine - there are some side-effects(dizziness)
+
+why useEffect ?
+
+function withoutEffectComponent(props) {
+  const [state, setState] = useState(null);
+  
+  // on mount, constructor
+  setState('123')
+
+
+  //dom change
+
+if(props.name != 'test'){
+    setState('ok')
+
+    //api
+}
+
+  return (
+    <>
+      <input ref={inputEl} type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+
+      <Children1 ref={ref2}/>
+      ...
+      ...
+    </>
+  );
+}
+
+how it works ?
+
+1. // gets called whenver component re-renders. (similar, didupdate, props, state)
+useEffect(
+    ()=>{
+        console.log(user.name, phone)
+        //scroll animation
+    }
+)
+
+2. // gets called only once, when component mounts (will mount)
+useEffect(
+    ()=>{
+        console.log(user.name, phone)
+    },
+    []
+)
+
+3. // specific did update (call whenever one of the dependency items get changed, referential quality)
+
+useEffect(
+    ()=>{
+        console.log(user.name, phone)
+    },
+    [phone, user.name]
+)
+    1. Can you have mulitple useEffects ? - yes
+
+
+
+useRef - for dom manipulation.
+
+eg - 
+with ref
+
+function TextInputWithFocusButton() {
+  const inputEl = useRef(null);
+  const onButtonClick = () => {
+    // `current` points to the mounted text input element
+    inputEl.current.focus();
+  };
+
+  // handler1
+    inputEl.current
+  // handler2
+    inputEl.current
+  return (
+    <>
+      <input ref={inputEl} type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+
+      <Children1 ref={ref2}/>
+      ...
+      ...
+    </>
+  );
+}
+
+without ref
+
+function TextInputWithFocusButton() {
+  [setState] = ('')
+
+  const onButtonClick = (evt) => {
+    // `current` points to the mounted text input element
+    evt.target.focus();
+    setState1(true)
+  };
+
+  const handler2 = (evt) => {
+    // `current` points to the mounted text input element
+    evt.target.focus();
+    setState1(false)
+  };
+
+
+  const handler2 = (evt) => {
+    // `current` points to the mounted text input element
+    evt.target.focus();
+    setState1(false)
+    setState3(true)
+  };
+
+
+
+  return (
+    <>
+      <input type="text" />
+      <button onClick={onButtonClick}>Focus the input</button>
+
+      ...handler1
+
+      ...handler2
+    </>
+  );
+}
+
+
+**  
+    //iife
+
+    js - ?, 
+            Q - is it by call by reference ? or call by value ?
+            A - objects are call by reference
+    
+    pure functions, unpure.
+    
+    unpure
+    const someFunc = (param1) => {
+
+        param1.test = 'test'
+
+    }
+
+    const callerFn() = { 
+        let var1 = { test: 123}
+        someFunc // changes var1
+    }
+
+    //pure - should not change recieved params.
+
+    const someFunc1operation = (param1) => {
+        return {
+            ...param1,
+            test: 'test'
+        }
+
+    }
+
+    immutable - 
+        1. Object.freeze, Object.seal - costly operation. at scale of 1000
+        
+        2. {
+            ...var1,
+            test: 'myVals'
+        }
+
+
+    ***
+        How do you iterate over an object - in python its dict - { key: value}?
+        Object.keys(var1) - [...keys] 
+
+
+map, filter, reduce.
+
+map:    [1, 2, 3].map(x => {
+            if(x !== 2)
+                return x*x
+            
+        })
+
+        [1, undefined, 9]]
+    
+Falsy values: 0, '', null, undefined, false
+
+filter : [1,2,3].filter(x=>{
+            if(x !== 1) return true 
+        })
+
+        [2,3]
+
+reduce - map + filter
